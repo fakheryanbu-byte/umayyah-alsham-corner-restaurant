@@ -1,0 +1,6 @@
+{
+  "name": "منيو ركن أمية الشام",
+  "description": "منيو إلكتروني احترافي لمطعم ركن أمية الشام في ينبع البحر - حي المشهد",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": []
+}
