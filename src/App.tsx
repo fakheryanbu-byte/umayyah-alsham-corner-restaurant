@@ -20,6 +20,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { supabase } from './lib/supabase';
 
 // --- Types ---
 interface Variant {
@@ -395,7 +396,23 @@ export default function App() {
     // 3. Construct Message
     const message = `طلب جديد من مطعم ركن أمية الشام:\n\n${itemsList}\n\n*المجموع الكلي: ${totalPrice} ريال*${locationLink}`;
     
-    // 4. Open WhatsApp
+    // 4. Save to Supabase (Optional Record)
+    if (supabase) {
+      try {
+        await supabase.from('orders').insert([
+          { 
+            items: itemsList, 
+            total_price: totalPrice, 
+            location_link: locationLink.replace('\n\n📍 *موقع العميل (قوقل ماب):*\n', '').replace('\n\n⚠️ *ملاحظة: لم يتمكن النظام من تحديد الموقع تلقائياً. يرجى إرسال الموقع يدوياً.*', 'N/A')
+          }
+        ]);
+        console.log("Order saved to database.");
+      } catch (dbError) {
+        console.error("Error saving to database:", dbError);
+      }
+    }
+
+    // 5. Open WhatsApp
     const url = `https://wa.me/${restaurantPhone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
     setIsSending(false);
